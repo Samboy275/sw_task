@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django specific
+*.log
+*.pot
+*.pyc
+*.pyo
+*.sqlite3
+db.sqlite3
+
+# Environment variables
+.env
+*.env
+
+# Django migrations (optional, depends on team decision)
+*/migrations/*.py
+*/migrations/*.pyc
+!*/migrations/__init__.py
+
+# Media / Uploaded files
+/media/
+staticfiles/
+static/
+
+# VS Code settings (if you use VS Code)
+.vscode/
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# MySQL/PostgreSQL dumps
+*.sql
+
+# Coverage reports
+htmlcov/
+coverage.xml
+*.cover
+.cache
+
+# Testing
+.tox/
+.pytest_cache/
+
+# Docker
+*.pid
+
+# Other
+*.sass-cache
+*.mo
+*.swp
+.idea/  # PyCharm project files
