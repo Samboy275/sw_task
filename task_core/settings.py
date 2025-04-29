@@ -25,12 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'FALSE') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1']
 
 
 # Application definition
@@ -80,11 +80,11 @@ WSGI_APPLICATION = 'task_core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DB_PASSWORD = os.environ.get('DB_PASSWORD')
-DB_NAME = os.environ.get('DB_NAME')
-DB_USER = os.environ.get('DB_USER')
-DB_HOST = os.environ.get('DB_HOST')
-DB_PORT = os.environ.get('DB_PORT')
+DB_PASSWORD = os.environ.get('MYSQL_PASSWORD')
+DB_NAME = os.environ.get('MYSQL_DATABASE')
+DB_USER = os.environ.get('MYSQL_USER')
+DB_HOST = os.environ.get('MYSQL_HOST')
+DB_PORT = os.environ.get('MYSQL_PORT')
 
 MYSQL_IS_AVAIL = all([DB_NAME, DB_PASSWORD, DB_USER, DB_PORT])
 
@@ -102,8 +102,8 @@ if MYSQL_IS_AVAIL:
             'NAME': DB_NAME,
             'USER': DB_USER,
             'PASSWORD': DB_PASSWORD,
-            'DB_HOST': DB_HOST,
-            'DB_PORT': DB_PORT,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
         }
     }
 

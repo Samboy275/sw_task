@@ -15,6 +15,11 @@ class HomeView(TemplateView):
             returns index.html
         """
         categories = Category.objects.filter(parent=None).all()
+        if categories.exists() == False:
+            Category.objects.get_or_create(name="A", level=0)
+            Category.objects.get_or_create(name="B", level=0)
+
+        categories = Category.objects.filter(parent=None).all()
         return render(request, template_name=self.template_name, context={'categories' : categories})
 
 
