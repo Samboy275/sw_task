@@ -9,10 +9,80 @@
 
 
 {% block content %}
+<div class="row justify-content-center align-items-center w-100 mt-5 flex-column" id="card-container">
+    <div class="col-6 align-items-center d-flex flex-column card p-5 gap-4">
+        {% for category in categories %}
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="category" value="{{ category.id }}" id="{{ category.id }}">
+                <label class="form-check-label" for="A">{{ category }}</label>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock content %}
 
 
 {% block scripts %}
 <!-- Including jquery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+    let cardCount = 1; // Track unique checkbox IDs
+    const URL = '{% url "categories:index" %}';
+    // Function to create the card container
+    function createCardContainer(id){
+        // Creates a card container to hold the check boxes with given id
+        let cardContainer = $(`<div id="card-${id}" class="col-6 align-items-center d-flex flex-column card p-5 gap-4"></div>`);
+        return cardContainer;
+    }
+
+    // Function to create the div that holds the category checkboxes
+    function createCategoryDiv(category){
+        let catContainer = $(`<div class="form-check">
+                <input type="checkbox" class="form-check-input" name="category" value="${category.id}" id="${category.id}">
+                <label class="form-check-label" for="${category.id}">${category.display_name}</label>
+            </div>`);
+        return catContainer;
+    }
+
+    // Click event handler on checkbox element
+    $(document).on('click', 'input[name="category"]', function (event) {
+        // Checked category id
+        let catId = event.target.value;
+
+        // Variable to check the checkbox status
+        let isChecked = event.target.checked;
+
+        // Condition to make sure adding new elements only occurs once the box is checked
+        if (isChecked && $(`#card-${catId}`).length == 0) {
+            // Sending AJAX request to the server to add new sub categories and return them
+            $.ajax({
+                type: "POST",
+                url: URL,
+                data: { "category_id" : catId },
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                success: function(response){
+                    // Get the categories list from response data
+                    console.log(response);
+                    let categories = response.categories;
+
+                    // Create the card container to hold the categories
+                    let cardContainer = createCardContainer(catId);
+
+                    // Loop through categories to append each category to card container
+                    categories.forEach(category =>{
+                        let catContainer = createCategoryDiv(category);
+                        cardContainer.append(catContainer);
+                    });
+                    $('#card-container').append(cardContainer);
+                },
+                error: function(error){
+                    console.log(error);
+                }
+            })
+        }
+    });
+</script>
 {% endblock scripts %}
