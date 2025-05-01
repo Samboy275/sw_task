@@ -14,12 +14,16 @@ class HomeView(TemplateView):
         """
             returns index.html
         """
-        categories = Category.objects.filter(parent=None).all()
+        # Querying categories
+        categories = Category.objects.filter(parent=None)
+        # Checking if default root categories exist or not
         if categories.exists() == False:
+            # Adding root categories if they dont exist
             Category.objects.get_or_create(name="A", level=0)
             Category.objects.get_or_create(name="B", level=0)
 
-        categories = Category.objects.filter(parent=None).all()
+            categories = Category.objects.filter(parent=None)
+
         return render(request, template_name=self.template_name, context={'categories' : categories})
 
 

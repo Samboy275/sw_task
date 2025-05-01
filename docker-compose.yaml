@@ -7,26 +7,33 @@ services:
     container_name: DB
     restart: always
     env_file:
-      - .env
+    - .env
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 5
     ports:
-      - '3307:3306'
+    - '3307:3306'
     volumes:
-      - db_data:/var/lib/mysql
+    - db_data:/var/lib/mysql
     networks:
-      - sw_task_network
+    - sw_task_network
 
   web_service:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+    - "8000:8000"
     env_file:
-      - .env
+    - .env
     networks:
-      - sw_task_network
+    - sw_task_network
     depends_on:
-      - DB
+      DB:
+        condition: service_healthy
     command: >
       sh -c "python manage.py migrate && gunicorn -w 2 -b 0.0.0.0:8000 task_core.wsgi:application"
 

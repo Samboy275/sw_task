@@ -5,7 +5,7 @@
 
 This role will be part of the Rightshero software development team.
 
-As a software engineer you are a part of a small but very efficient and multi-tasking team. 
+As a software engineer you are a part of a small but very efficient and multi-tasking team.
 
 The team is tasked with handling all the software aspects of our service.
 
@@ -63,3 +63,70 @@ An AWS CloudFormation template YAML file for:
 - The **AWS CloudFormation** template YAML file.
 - Once you're finished, submit a PR to this repo with your email in a commit message.
 - The email should be the same as your email in the CV/Resume.
+
+
+# Samual's Software Engineer Task Project
+This is my implementation of the given task using Django
+There are 2 ways to run the project locally
+
+
+## [1] Using Docker-Compose
+To run the project in this setting the provided .env file must be in the same directory as the docker-compose.yaml file then run the following commands:
+
+- First the database service DB
+```bash
+docker-compose up DB
+```
+
+- Once its running use another terminal to run the web service **note that the DB service must show that it is ready for connection before running this command**
+```bash
+docker-composer up --build web_service
+```
+Now you can access the project at [http://0.0.0.0:8000](http://0.0.0.0:8000)
+
+## [2] Without Using Docker
+
+This will run the Django project using the `sqlite3` database with the following commands:
+
+- First, create a virtual environment
+
+```bash
+python -m venv ./venv
+```
+
+- Then, activate the virtual environment
+
+  - On **Linux/macOS**:
+
+  ```bash
+  source venv/bin/activate
+  ```
+
+  - On **Windows**:
+
+  ```bash
+  venv\Scripts\activate
+  ```
+
+- Install the required dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+- Apply migrations to the database
+
+```bash
+python manage.py migrate
+```
+
+- Finally, run the Django development server
+
+```bash
+python manage.py runserver
+```
+
+Now, you can access the project at [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+---
+
