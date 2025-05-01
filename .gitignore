@@ -12,8 +12,6 @@ __pycache__/
 db.sqlite3
 
 # Environment variables
-.env
-*.env
 
 # Django migrations (optional, depends on team decision)
 */migrations/*.py

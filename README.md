@@ -1,43 +1,6 @@
 ![alt text](https://rightshero.com/wp/wp-content/uploads/2024/04/RightsHero-Logo.png)
 
 
-# Software Engineer Task Assessment
-
-This role will be part of the Rightshero software development team.
-
-As a software engineer you are a part of a small but very efficient and multi-tasking team.
-
-The team is tasked with handling all the software aspects of our service.
-
-# The task
-The task will be a **project** and **AWS CloudFormation** template:
-
-## [1] The project:
-A project contains one page have a 2 categories checkboxes
-
-- [ ] Category A
-- [ ] Category B
-
-Unlimited subcategories of parent category (if it is hard to achieve the unlimited levels, you can set 3 levels hard-coded)
-Should use Ajax.
-
-### Example
-- [ ] Category A
-- [ ] Category B
-
-If user select “Category B”
-The system will create another 2 checkboxes with
-
-- [ ] SUB Category B1
-- [ ] SUB Category B2
-
-Selecting Sub Category B2 will create another 2 checkboxes
-
-- [ ] SUB SUB Category B2-1
-- [ ] SUB SUB Category B2-2
- And so on
-
-
 ## [2] AWS CloudFormation
 An AWS CloudFormation template YAML file for:
 - Launch a t2.micro or t3.micro EC2 instance
@@ -71,20 +34,21 @@ There are 2 ways to run the project locally
 
 
 ## [1] Using Docker-Compose
-To run the project in this setting the provided .env file must be in the same directory as the docker-compose.yaml file then run the following commands:
+To run the project in this setting the provided .env file must be in the same directory as the docker-compose.yaml file then run the following command:
 
-- First the database service DB
-```bash
-docker-compose up DB
+```
+docker-compose up
 ```
 
-- Once its running use another terminal to run the web service **note that the DB service must show that it is ready for connection before running this command**
-```bash
-docker-composer up --build web_service
-```
+**make sure you have the following files before running the command**
+
+- .env
+- requirements.txt
+
 Now you can access the project at [http://0.0.0.0:8000](http://0.0.0.0:8000)
 
 ## [2] Without Using Docker
+  **make sure there is no environment variables for database in the .env file to run the project using this method**
 
 This will run the Django project using the `sqlite3` database with the following commands:
 
@@ -125,8 +89,25 @@ python manage.py migrate
 ```bash
 python manage.py runserver
 ```
+To use `mysql` instead of `sqlite3`, follow these steps:
+
+1. Install MySQL on your machine.
+2. Create a database for the application.
+3. Create a user and grant them the necessary privileges.
+
+Then, add the following credentials to your `.env` file:
+
+- `MYSQL_USER`: **The database user you just created**
+- `MYSQL_DATABASE`: **The name of the database**
+- `MYSQL_PASSWORD`: **The password for the user**
+- `MYSQL_HOST`: **The host where MySQL is running (e.g., `localhost`)**
+- `MYSQL_PORT`: **The port MySQL is listening on (default is `3306`)**
+
 
 Now, you can access the project at [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
----
 
+
+# Notes
+
+- Its not good practice to push .env files that hold environment variables and important secrets into a repo but this is a task so it is an exception.

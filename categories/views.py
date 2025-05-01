@@ -11,16 +11,16 @@ import json
 class HomeView(TemplateView):
     template_name = 'categories/index.html'
     def get(self, request, *args, **kwargs):
-        """
+        '''
             returns index.html
-        """
+        '''
         # Querying categories
         categories = Category.objects.filter(parent=None)
         # Checking if default root categories exist or not
         if categories.exists() == False:
             # Adding root categories if they dont exist
-            Category.objects.get_or_create(name="A", level=0)
-            Category.objects.get_or_create(name="B", level=0)
+            Category.objects.get_or_create(name='A', level=0)
+            Category.objects.get_or_create(name='B', level=0)
 
             categories = Category.objects.filter(parent=None)
 
@@ -28,9 +28,19 @@ class HomeView(TemplateView):
 
 
     def post(self, request, *args, **kwargs):
-        """ Post request view to handle adding new categories and returns them as json """
-        cat_id = request.POST.get("category_id")
-        print(cat_id)
+        ''' Post request view to handle adding new categories and returns them as json '''
+        cat_id = request.POST.get('category_id', None)
+
+        # Check if Id is sent
+        if cat_id == None:
+            return JsonResponse({'error' : 'bad request'}) , 400
+
+        # Validate Id
+        try:
+            cat_id = int(cat_id)
+        except Exception:
+            return JsonResponse({'error' : 'invalid provided id'}), 400
+
         # Getting the current parent category
         parent = Category.objects.get(id=cat_id)
         categories = None
@@ -50,4 +60,4 @@ class HomeView(TemplateView):
 
             return JsonResponse(data)
 
-        return JsonResponse({"error" : "no parent specified"})
+        return JsonResponse({'error' : 'no parent specified'}), 400
