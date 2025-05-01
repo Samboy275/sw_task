@@ -1,0 +1,90 @@
+# The implementation of this file is solely based on my reading into AWS cloud formation and copying from online sources
+# And it wasn't tested
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Deploy a Dockerized Django project on EC2 with SSH access.
+
+
+Parameters:
+  KeyName:
+    Type: String
+    Description: EC2 KeyPair name for SSH access
+
+Resources:
+
+  ApplySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow HTTP, HTTPS, SSH
+      SecurityGroupIngress:
+        # SSH
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        # HTTP
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        # HTTPS
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+
+  InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [ec2.amazonaws.com]
+            Action: ['sts:AssumeRole']
+      ManagedPolicyArns:
+        - arn:aws:iam:aws:policy/AdministratorAccess
+      Path: /
+
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles: [!Ref InstanceRole]
+
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    InstanceType: t2.micro
+    KeyName: !Ref KeyName
+    IamInstanceProfile: !Ref InstanceProfile
+    SecurityGroups: [!Ref ApplySecurityGroup]
+    ImageId: ami-076e4c48f7e1a1f2e
+    UserData:
+      Fn::Base64: !Sub |
+        #!/bin/bash
+        yum update -y
+        yum install -y git
+        amazon-linux-extras install docker -y
+        service docker start
+        usermod -a -G docker ec2-user
+
+        # Install docker-compose
+        curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        chmod +x /usr/local/bin/docker-compose
+        ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+        # Clone the project repo
+        cd /home/ec2-user
+        git clone https://gitub.com/samboy275/sw_task.git
+        cd sw_task
+
+        if [ -f ".env" ] && [ -f "docker-compose.yaml" ]; then
+          docker-compose up -d
+        else
+          echo ".env or docker-compose.yaml missing. Aborting" >> /home/ec2-user/deployment.log
+        fi
+
+Outputs:
+  InstancePublicIp:
+    Description: Public IP of EC2 instance
+    Value: !GetAtt EC2Instance.PublicIp
