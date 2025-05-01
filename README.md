@@ -17,7 +17,13 @@ docker-compose up
 - .env
 - requirements.txt
 
-Now you can access the project at [http://0.0.0.0:8000](http://0.0.0.0:8000)
+Now you can access the project at:
+
+ [http://0.0.0.0:8000](http://0.0.0.0:8000) In `Linux`
+
+ or
+
+ [http://127.0.0.1:8000](http://127.0.0.1:8000) in `Windows`
 
 ## [2] Without Using Docker
   **make sure there is no environment variables for database in the .env file to run the project using this method**
