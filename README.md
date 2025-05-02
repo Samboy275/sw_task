@@ -83,3 +83,4 @@ Now, you can access the project at [http://127.0.0.1:8000](http://127.0.0.1:8000
 # Notes
 
 - Its not good practice to push .env files that hold environment variables and important secrets into a repo but this is a task so it is an exception.
+- Email can be found in the last commit
